@@ -1,0 +1,66 @@
+<div class="bg-base-200/30 min-h-full">
+  <div class="max-w-3xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-black text-base-content mb-6">Mis compras</h1>
+
+    @if (cargando()) {
+    <div class="flex justify-center py-16"><span class="loading loading-spinner loading-lg"></span></div>
+    } @else if (compras().length === 0) {
+    <div class="card bg-base-100 border border-base-200 shadow-md">
+      <div class="card-body items-center text-center py-16">
+        <p class="text-base-content/60">Todavía no realizaste ninguna compra.</p>
+      </div>
+    </div>
+    } @else {
+    <div class="flex flex-col gap-3">
+      @for (orden of compras(); track orden.id) {
+      <div class="card bg-base-100 border border-base-200 shadow-sm overflow-hidden">
+        <button type="button"
+          class="w-full text-left p-4 flex items-center justify-between hover:bg-base-200/30 transition-colors"
+          (click)="toggleOrden(orden.id)">
+          <div>
+            <p class="font-semibold text-base-content">Compra #{{ orden.id }}</p>
+            <p class="text-xs text-base-content/50">{{ orden.fecha | date:'d MMM y, HH:mm' }}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="badge badge-success badge-sm">{{ orden.estado }}</span>
+            <span class="font-bold text-primary">${{ orden.total | number:'1.0-0' }}</span>
+          </div>
+        </button>
+
+        @if (ordenAbiertaId() === orden.id) {
+        <div class="border-t border-base-200 p-4 bg-base-200/20">
+          <div class="flex flex-col gap-2 mb-3">
+            @for (item of orden.items; track item.productoId) {
+            <div class="flex justify-between text-sm">
+              <span>
+                {{ item.productoNombre }}
+                @if (item.talle) { <span class="text-base-content/50">(talle {{ item.talle }})</span> }
+                × {{ item.cantidad }}
+              </span>
+              <span>${{ item.subtotal | number:'1.0-0' }}</span>
+            </div>
+            }
+          </div>
+          <div class="border-t border-base-200 pt-2 text-sm flex flex-col gap-1">
+            <div class="flex justify-between"><span>Subtotal</span><span>${{ orden.subtotal | number:'1.0-0' }}</span>
+            </div>
+            @if (orden.cuponCodigo) {
+            <div class="flex justify-between text-success">
+              <span>Cupón {{ orden.cuponCodigo }}</span><span>-${{ orden.descuento | number:'1.0-0' }}</span>
+            </div>
+            }
+            <div class="flex justify-between font-bold"><span>Total</span><span>${{ orden.total | number:'1.0-0'
+                }}</span></div>
+            @if (orden.ultimosDigitosTarjeta) {
+            <p class="text-xs text-base-content/40 mt-1">Pagado con tarjeta terminada en {{ orden.ultimosDigitosTarjeta
+              }}</p>
+            }
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+    }
+  </div>
+</div>

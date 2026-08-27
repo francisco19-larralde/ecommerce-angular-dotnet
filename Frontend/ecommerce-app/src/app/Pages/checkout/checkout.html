@@ -1,0 +1,144 @@
+<div class="bg-base-200/30 min-h-full">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-black text-base-content mb-6">Finalizar compra</h1>
+
+    @if (carrito(); as c) {
+    @if (c.items.length === 0) {
+    <div class="card bg-base-100 border border-base-200 shadow-md">
+      <div class="card-body items-center text-center py-16">
+        <p class="text-base-content/60">Tu carrito está vacío.</p>
+      </div>
+    </div>
+    } @else {
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- FORMULARIO DE PAGO -->
+      <div class="md:col-span-2">
+        <form [formGroup]="formulario" (ngSubmit)="onSubmit()"
+          class="card bg-base-100 border border-base-200 shadow-md">
+          <div class="card-body">
+            <h2 class="font-bold text-base-content mb-3">Datos de la tarjeta</h2>
+            <p class="text-xs text-base-content/50 mb-4">
+              Esto es un pago simulado, no se procesa ningún cobro real. Podés usar cualquier tarjeta de prueba
+              (por ejemplo 4111 1111 1111 1111). Una tarjeta terminada en 0000 simula un rechazo.
+            </p>
+
+            <div class="flex flex-col gap-3">
+              <div>
+                <label class="label"><span class="label-text text-xs">Número de tarjeta</span></label>
+                <input type="text" formControlName="numeroTarjeta" placeholder="0000 0000 0000 0000"
+                  class="input input-bordered w-full" />
+                @if (formulario.get('numeroTarjeta')?.invalid && formulario.get('numeroTarjeta')?.touched) {
+                <span class="text-error text-sm">Ingresá un número de tarjeta válido</span>
+                }
+              </div>
+
+              <div>
+                <label class="label"><span class="label-text text-xs">Nombre del titular</span></label>
+                <input type="text" formControlName="nombreTitular" placeholder="Como figura en la tarjeta"
+                  class="input input-bordered w-full" />
+                @if (formulario.get('nombreTitular')?.invalid && formulario.get('nombreTitular')?.touched) {
+                <span class="text-error text-sm">Este campo es obligatorio</span>
+                }
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="label"><span class="label-text text-xs">Vencimiento</span></label>
+                  <input type="text" formControlName="vencimiento" placeholder="MM/AA"
+                    class="input input-bordered w-full" />
+                  @if (formulario.get('vencimiento')?.invalid && formulario.get('vencimiento')?.touched) {
+                  <span class="text-error text-sm">Formato MM/AA</span>
+                  }
+                </div>
+                <div>
+                  <label class="label"><span class="label-text text-xs">CVV</span></label>
+                  <input type="text" formControlName="cvv" placeholder="123" class="input input-bordered w-full" />
+                  @if (formulario.get('cvv')?.invalid && formulario.get('cvv')?.touched) {
+                  <span class="text-error text-sm">3 o 4 dígitos</span>
+                  }
+                </div>
+              </div>
+            </div>
+
+            @if (error()) {
+            <div class="alert alert-error text-sm mt-4">{{ error() }}</div>
+            }
+
+            <button type="submit" class="btn btn-primary w-full mt-5 rounded-xl" [disabled]="procesando()">
+              @if (procesando()) {
+              <span class="loading loading-spinner loading-sm"></span>
+              }
+              Pagar ${{ totalConDescuento() | number:'1.0-0' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RESUMEN -->
+      <div>
+        <div class="card bg-base-100 border border-base-200 shadow-md sticky top-4">
+          <div class="card-body">
+            <h2 class="font-bold text-base-content mb-3">Resumen</h2>
+
+            <div class="flex flex-col gap-2 max-h-64 overflow-y-auto mb-3">
+              @for (item of c.items; track item.id) {
+              <div class="flex justify-between text-sm">
+                <span class="truncate pr-2">
+                  {{ item.productoNombre }}
+                  @if (item.talle) { <span class="text-base-content/50">({{ item.talle }})</span> }
+                  × {{ item.cantidad }}
+                </span>
+                <span class="whitespace-nowrap">${{ item.subtotal | number:'1.0-0' }}</span>
+              </div>
+              }
+            </div>
+
+            <!-- CUPÓN -->
+            <div class="border-t border-base-200 pt-3 mb-3">
+              @if (!cuponAplicado()) {
+              <div class="flex gap-2">
+                <input type="text" placeholder="Código de descuento" class="input input-bordered input-sm flex-1"
+                  [(ngModel)]="cuponTexto" [ngModelOptions]="{standalone: true}" />
+                <button type="button" class="btn btn-outline btn-sm" [disabled]="validandoCupon()"
+                  (click)="validarCupon()">
+                  Aplicar
+                </button>
+              </div>
+              @if (errorCupon()) {
+              <p class="text-error text-xs mt-1">{{ errorCupon() }}</p>
+              }
+              } @else {
+              <div class="flex items-center justify-between bg-success/10 text-success rounded-lg px-3 py-2 text-sm">
+                <span>Cupón <strong>{{ cuponAplicado()?.codigo }}</strong> ({{ cuponAplicado()?.porcentaje }}%
+                  off)</span>
+                <button type="button" class="btn btn-ghost btn-xs" (click)="quitarCupon()">Quitar</button>
+              </div>
+              }
+            </div>
+
+            <div class="flex flex-col gap-1 text-sm border-t border-base-200 pt-3">
+              <div class="flex justify-between">
+                <span class="text-base-content/60">Subtotal</span>
+                <span>${{ c.total | number:'1.0-0' }}</span>
+              </div>
+              @if (cuponAplicado()) {
+              <div class="flex justify-between text-success">
+                <span>Descuento</span>
+                <span>-${{ descuentoCalculado() | number:'1.0-0' }}</span>
+              </div>
+              }
+              <div class="flex justify-between font-bold text-lg pt-1">
+                <span>Total</span>
+                <span class="text-primary">${{ totalConDescuento() | number:'1.0-0' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    }
+    }
+  </div>
+</div>

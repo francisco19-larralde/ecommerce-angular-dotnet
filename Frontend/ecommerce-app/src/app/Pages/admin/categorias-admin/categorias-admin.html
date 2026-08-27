@@ -1,0 +1,295 @@
+<div class="bg-base-200/30 min-h-full">
+
+  <div class="max-w-5xl mx-auto px-4 py-8">
+
+    <!-- HEADER -->
+
+    <div class="mb-8">
+
+      <h1 class="text-3xl font-black text-base-content tracking-tight">
+        Categorías
+      </h1>
+
+      <p class="text-base-content/60 mt-2 max-w-2xl">
+        Decidí qué categorías aparecen como carrusel en la página principal y en qué orden.
+      </p>
+
+    </div>
+
+
+    <!-- CREAR NUEVA -->
+
+    <div class="card bg-base-100 border border-base-200 shadow-md
+                hover:shadow-lg transition-all duration-300 mb-8 overflow-hidden">
+
+      <div class="card-body p-5">
+
+        <div class="flex flex-col sm:flex-row gap-3">
+
+          <div class="flex-1">
+
+            <label class="text-xs uppercase tracking-wider text-base-content/40 font-semibold mb-2 block">
+              Nueva categoría
+            </label>
+
+            <input type="text" placeholder="Nombre de la nueva categoría" class="input input-bordered w-full rounded-xl
+                     focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              [(ngModel)]="nombreNuevo" (keyup.enter)="crearCategoria()" />
+
+          </div>
+
+
+          <div class="flex items-end">
+
+            <button class="btn btn-primary w-full sm:w-auto min-w-32 rounded-xl shadow-sm
+                     hover:shadow-lg hover:bg-primary-content hover:text-primary
+                     hover:border-primary transition-all duration-200" [disabled]="creando()"
+              (click)="crearCategoria()">
+
+              @if (creando()) {
+
+              <span class="loading loading-spinner loading-sm"></span>
+
+              Agregando...
+
+              } @else {
+
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                stroke="currentColor" class="w-5 h-5">
+
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+
+              </svg>
+
+              Agregar
+
+              }
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    @if (cargando()) {
+
+    <div class="card bg-base-100 border border-base-200 shadow-sm">
+
+      <div class="flex flex-col items-center justify-center py-16">
+
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+
+        <span class="text-sm text-base-content/50 mt-3">
+          Cargando categorías...
+        </span>
+
+      </div>
+
+    </div>
+
+    } @else {
+
+
+    <!-- LISTADO -->
+
+    <div class="flex flex-col gap-4">
+
+      @for (categoria of categorias(); track categoria.id) {
+
+      <div class="card bg-base-100 border border-base-200 shadow-md
+                   hover:shadow-2xl hover:-translate-y-0.5 hover:border-primary/30
+                   transition-all duration-300 overflow-hidden group">
+
+        <div class="card-body p-5">
+
+          <div class="flex flex-col lg:flex-row lg:items-center gap-5">
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="flex-1 min-w-0">
+
+              <div class="flex items-center gap-3 mb-1">
+
+                <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary
+                             flex items-center justify-center shrink-0">
+
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                    stroke="currentColor" class="w-5 h-5">
+
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M20.25 7.5 12 3 3.75 7.5m16.5 0v9L12 21l-8.25-4.5v-9m16.5 0L12 12m0 0L3.75 7.5M12 12v9" />
+
+                  </svg>
+
+                </div>
+
+
+                <div class="min-w-0">
+
+                  <h2 class="font-bold text-lg leading-tight text-base-content truncate" [title]="categoria.nombre">
+                    {{ categoria.nombre }}
+                  </h2>
+
+                  <p class="text-xs text-base-content/50 mt-1">
+                    {{ categoria.cantidadProductos }}
+                    {{ categoria.cantidadProductos === 1 ? 'producto' : 'productos' }}
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- CONTROLES -->
+
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+
+
+              <!-- ORDEN -->
+
+              <div class="flex items-center gap-3">
+
+                <div>
+
+                  <span class="text-xs uppercase tracking-wider
+                               text-base-content/40 font-semibold block">
+                    Orden
+                  </span>
+
+                  <span class="text-xs text-base-content/40">
+                    Posición en Home
+                  </span>
+
+                </div>
+
+
+                <input type="number" class="input input-bordered input-sm w-20 rounded-lg text-center
+                             focus:border-primary focus:outline-none focus:ring-2
+                             focus:ring-primary/20" [value]="categoria.orden"
+                  [disabled]="guardandoId() === categoria.id"
+                  (change)="cambiarOrden(categoria, +$any($event.target).value)" />
+
+              </div>
+
+
+              <div class="hidden sm:block w-px h-10 bg-base-200"></div>
+
+
+              <!-- VISIBILIDAD -->
+
+              <div class="flex items-center justify-between sm:justify-start gap-4">
+
+                <div>
+
+                  <span class="text-xs uppercase tracking-wider
+                               text-base-content/40 font-semibold block">
+                    Visibilidad
+                  </span>
+
+                  <span class="text-xs" [class.text-success]="categoria.mostrarEnHome"
+                    [class.text-base-content/40]="!categoria.mostrarEnHome">
+                    {{ categoria.mostrarEnHome ? 'Visible en Home' : 'Oculta en Home' }}
+                  </span>
+
+                </div>
+
+
+                <input type="checkbox" class="toggle toggle-primary" [checked]="categoria.mostrarEnHome"
+                  [disabled]="guardandoId() === categoria.id" (change)="toggleMostrarEnHome(categoria)" />
+
+              </div>
+
+
+              <div class="hidden sm:block w-px h-10 bg-base-200"></div>
+
+
+              <!-- ELIMINAR -->
+
+              <button type="button" class="btn btn-sm btn-error btn-outline rounded-lg
+                           hover:text-white transition-all duration-200" [disabled]="guardandoId() === categoria.id"
+                (click)="eliminarCategoria(categoria)">
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                  stroke="currentColor" class="w-4 h-4">
+
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12.56 0c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0C7.91 2.278 7 3.262 7 4.442v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+
+                </svg>
+
+                Eliminar
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- ESTADO DE GUARDADO -->
+
+          @if (guardandoId() === categoria.id) {
+
+          <div class="flex items-center gap-2 mt-3 pt-3 border-t border-base-200">
+
+            <span class="loading loading-spinner loading-xs text-primary"></span>
+
+            <span class="text-xs text-base-content/50">
+              Guardando cambios...
+            </span>
+
+          </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      }
+
+
+      @if (categorias().length === 0) {
+
+      <div class="card bg-base-100 border border-base-200 shadow-sm">
+
+        <div class="card-body items-center text-center py-14">
+
+          <div class="w-14 h-14 rounded-2xl bg-base-200 text-base-content/30
+                       flex items-center justify-center mb-3">
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-7 h-7">
+
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M20.25 7.5 12 3 3.75 7.5m16.5 0v9L12 21l-8.25-4.5v-9m16.5 0L12 12m0 0L3.75 7.5M12 12v9" />
+
+            </svg>
+          </div>
+
+
+          <h3 class="font-bold text-base-content">
+            No hay categorías
+          </h3>
+
+
+          <p class="text-sm text-base-content/50 mt-1">
+            Creá tu primera categoría para comenzar.
+          </p>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</div>

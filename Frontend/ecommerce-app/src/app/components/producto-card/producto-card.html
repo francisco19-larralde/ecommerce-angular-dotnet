@@ -1,0 +1,76 @@
+<div class="card bg-base-100 border border-base-200 shadow-md
+            hover:shadow-2xl hover:-translate-y-1 hover:border-primary/30
+            transition-all duration-300 overflow-hidden group">
+
+  <!-- IMAGEN -->
+  <a [routerLink]="['/productos', producto().id]" class="block">
+    <figure class="relative h-56 bg-base-200 overflow-hidden m-0 p-0">
+
+      @if (producto().imagenUrl) {
+      <img [src]="producto().imagenUrl" [alt]="producto().nombre"
+        class="block w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+      } @else {
+      <div class="flex flex-col items-center justify-center h-full text-base-content/30">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-12 h-12 mb-2 text-base-content/20">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m20.25 7.5-8.25-4.5-8.25 4.5m16.5 0v9L12 21l-8.25-4.5v-9m16.5 0L12 12m0 0L3.75 7.5M12 12v9" />
+        </svg>
+        <span class="text-sm">Sin imagen</span>
+      </div>
+      }
+
+      <!-- CATEGORÍA -->
+      <div class="absolute top-3 left-3">
+        <span
+          class="badge bg-base-100/90 text-base-content backdrop-blur-sm border border-base-200/50 shadow-sm font-semibold">
+          {{ producto().categoriaNombre }}
+        </span>
+
+        @if (producto().stock === 0) {
+        <span
+          class="badge badge-error bg-error/90 text-base-100 backdrop-blur-sm border border-error/50 shadow-sm font-semibold ml-2">
+          Sin stock
+        </span>
+        }
+      </div>
+
+    </figure>
+  </a>
+
+
+  <!-- CONTENIDO -->
+  <div class="card-body p-5">
+
+    <div class="min-h-14">
+      <a [routerLink]="['/productos', producto().id]" class="link link-hover">
+        <h2 class="font-bold text-lg leading-tight line-clamp-2 text-base-content" [title]="producto().nombre">
+          {{ producto().nombre }}
+        </h2>
+      </a>
+    </div>
+
+    <div class="mt-1">
+      <span class="text-xs uppercase tracking-wider text-base-content/40 font-medium">Precio</span>
+      <p class="text-2xl font-black text-primary">${{ producto().precio | number:'1.0-0' }}</p>
+    </div>
+
+    <div class="card-actions mt-3">
+      <button class="btn btn-primary w-full rounded-xl shadow-sm hover:shadow-lg
+              hover:bg-primary-content hover:text-primary hover:border-primary
+              transition-all duration-200" [disabled]="agregando()" (click)="onAgregarClick()">
+        @if (agregando()) {
+        <span class="loading loading-spinner loading-sm"></span>
+        Agregando...
+        } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437m0 0L6.75 12.75A2.25 2.25 0 0 0 8.93 14.5h7.94a2.25 2.25 0 0 0 2.18-1.75l1.35-5.625a.75.75 0 0 0-.728-.925H5.106Zm0 0L4.5 3.75m4.5 14.25a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0Zm8.25 0a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0Z" />
+        </svg>
+        Agregar al carrito
+        }
+      </button>
+    </div>
+  </div>
+</div>

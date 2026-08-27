@@ -1,0 +1,43 @@
+@if (productos().length > 0) {
+<section class="mb-10">
+  <div class="mb-4">
+    <h2 class="text-2xl font-bold text-base-content">{{ titulo() }}</h2>
+  </div>
+
+  <div class="relative group">
+
+    @if (puedeIrIzquierda()) {
+    <button class="absolute left-2 top-1/2 -translate-y-1/2 z-10
+               btn btn-circle btn-sm bg-base-100/95 text-base-content
+               border border-base-200 shadow-lg
+               opacity-0 group-hover:opacity-100
+               hover:bg-primary hover:text-primary-content hover:border-primary hover:scale-105
+               transition-all duration-200" (click)="scrollIzquierda()" aria-label="Desplazar hacia la izquierda">
+      ←
+    </button>
+    }
+
+    <div #scrollContainer (scroll)="onScroll()" class="flex gap-4 overflow-x-auto py-3 px-1 snap-x snap-mandatory scroll-smooth
+             [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none">
+      @for (producto of productos(); track producto.id) {
+      <div class="w-64 min-w-64 snap-start">
+        <app-producto-card [producto]="producto" [agregando]="agregandoId() === producto.id"
+          (agregarClick)="onAgregarClick($event)" />
+      </div>
+      }
+    </div>
+
+    @if (puedeIrDerecha()) {
+    <button class="absolute right-2 top-1/2 -translate-y-1/2 z-10
+               btn btn-circle btn-sm bg-base-100/95 text-base-content
+               border border-base-200 shadow-lg
+               opacity-0 group-hover:opacity-100
+               hover:bg-primary hover:text-primary-content hover:border-primary hover:scale-105
+               transition-all duration-200" (click)="scrollDerecha()" aria-label="Desplazar hacia la derecha">
+      →
+    </button>
+    }
+
+  </div>
+</section>
+}

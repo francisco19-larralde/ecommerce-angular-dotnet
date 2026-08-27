@@ -1,0 +1,286 @@
+<div class="bg-base-200/30">
+  <div class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- HEADER -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-black text-base-content tracking-tight">
+        Todos los productos
+      </h1>
+
+      <p class="text-base-content/60 mt-1">
+        {{ totalRegistros() }} productos encontrados
+      </p>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- SIDEBAR DE FILTROS -->
+      <aside class="w-full lg:w-64 shrink-0 lg:pt-10">
+        <div class="card bg-base-100 border border-base-200 shadow-sm lg:sticky lg:top-20">
+
+          <div class="card-body p-5">
+
+            <!-- TÍTULO FILTROS -->
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-bold text-base-content">
+                Filtros
+              </h2>
+
+              <button type="button" class="btn btn-ghost btn-xs" (click)="limpiarFiltros()">
+                Limpiar todo
+              </button>
+            </div>
+
+            <!-- BÚSQUEDA -->
+            <div class="mb-5">
+              <label class="label">
+                <span class="label-text text-xs font-semibold uppercase tracking-wide">
+                  Buscar
+                </span>
+              </label>
+
+              <input type="text" placeholder="Nombre del producto..." class="input input-bordered input-sm w-full"
+                [ngModel]="filtros().busqueda" (keyup.enter)="onBuscarTexto($any($event.target).value)" />
+            </div>
+
+            <!-- CATEGORÍA -->
+            <div class="mb-5">
+              <p class="text-xs font-semibold uppercase tracking-wide text-base-content/60 mb-2">
+                Categoría
+              </p>
+
+              <div class="flex flex-col gap-1">
+
+                <!-- TODAS -->
+                <label class="flex items-center gap-2 cursor-pointer py-1">
+                  <input type="radio" name="categoria" class="radio radio-primary radio-sm"
+                    [checked]="filtros().categoriaId === null" (change)="onCambiarCategoria(null)" />
+
+                  <span class="text-sm">
+                    Todas
+                  </span>
+                </label>
+
+                <!-- CATEGORÍAS -->
+                @for (categoria of categorias(); track categoria.id) {
+                <label class="flex items-center gap-2 cursor-pointer py-1">
+
+                  <input type="radio" name="categoria" class="radio radio-primary radio-sm"
+                    [checked]="filtros().categoriaId === categoria.id" (change)="onCambiarCategoria(categoria.id)" />
+
+                  <span class="text-sm">
+                    {{ categoria.nombre }}
+                  </span>
+
+                </label>
+                }
+
+              </div>
+            </div>
+
+            <!-- PRECIO -->
+            <div class="mb-5">
+
+              <p class="text-xs font-semibold uppercase tracking-wide text-base-content/60 mb-2">
+                Precio
+              </p>
+
+              <div class="flex items-center gap-2">
+
+                <input type="number" placeholder="Mín" class="input input-bordered input-sm w-full"
+                  [(ngModel)]="precioMinBorrador" />
+
+                <span class="text-base-content/40">
+                  —
+                </span>
+
+                <input type="number" placeholder="Máx" class="input input-bordered input-sm w-full"
+                  [(ngModel)]="precioMaxBorrador" />
+
+              </div>
+
+              <button type="button" class="btn btn-outline btn-sm w-full mt-2" (click)="aplicarPrecio()">
+                Aplicar
+              </button>
+
+            </div>
+
+            <!-- TALLE -->
+            @if (tallesDisponibles().length > 0) {
+
+            <div class="mb-2">
+
+              <p class="text-xs font-semibold uppercase tracking-wide text-base-content/60 mb-2">
+                Talle
+              </p>
+
+              <div class="flex flex-wrap gap-1.5">
+
+                <!-- TODOS -->
+                <button type="button" class="btn btn-xs rounded-lg" [class.btn-primary]="filtros().talle === null"
+                  [class.btn-outline]="filtros().talle !== null" (click)="onCambiarTalle(null)">
+                  Todos
+                </button>
+
+                <!-- TALLES -->
+                @for (talle of tallesDisponibles(); track talle) {
+
+                <button type="button" class="btn btn-xs rounded-lg" [class.btn-primary]="filtros().talle === talle"
+                  [class.btn-outline]="filtros().talle !== talle" (click)="onCambiarTalle(talle)">
+                  {{ talle }}
+                </button>
+
+                }
+
+              </div>
+            </div>
+
+            }
+
+          </div>
+        </div>
+      </aside>
+
+
+      <!-- RESULTADOS -->
+      <div class="flex-1 min-w-0">
+
+        <!-- ORDEN -->
+        <div class="flex justify-end mb-4">
+
+          <select class="select select-bordered select-sm w-52" [ngModel]="filtros().ordenarPor"
+            (ngModelChange)="onCambiarOrden($event)">
+
+            <option value="recientes">
+              Más recientes
+            </option>
+
+            <option value="precio_asc">
+              Menor precio
+            </option>
+
+            <option value="precio_desc">
+              Mayor precio
+            </option>
+
+            <option value="nombre">
+              Nombre (A-Z)
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- LOADING -->
+        @if (cargando()) {
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+
+          @for (item of [1,2,3,4,5,6]; track item) {
+
+          <div class="card bg-base-100 border border-base-200 shadow-md overflow-hidden">
+
+            <div class="h-56 bg-base-300 animate-pulse"></div>
+
+            <div class="card-body gap-3">
+
+              <div class="h-5 w-3/4 bg-base-300 rounded-lg animate-pulse"></div>
+
+              <div class="h-7 w-1/3 bg-base-300 rounded-lg animate-pulse"></div>
+
+              <div class="h-11 w-full bg-base-300 rounded-xl animate-pulse"></div>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+        } @else {
+
+
+        <!-- PRODUCTOS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+
+          @for (producto of productos(); track producto.id) {
+
+          <app-producto-card [producto]="producto" [agregando]="agregandoId() === producto.id"
+            (agregarClick)="agregarAlCarrito($event)" />
+
+          } @empty {
+
+          <!-- SIN RESULTADOS -->
+          <div class="col-span-full card bg-base-100 border border-base-200 shadow-md">
+
+            <div class="card-body items-center text-center py-16">
+
+              <div class="w-16 h-16 rounded-2xl bg-base-200 text-base-content/30 flex items-center justify-center mb-3">
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-8 h-8">
+
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-4.5-4.5m2.25-5.25a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+
+                </svg>
+
+              </div>
+
+              <h3 class="font-bold text-base-content">
+                No encontramos productos
+              </h3>
+
+              <p class="text-sm text-base-content/50 mt-1">
+                Probá ajustar o limpiar los filtros.
+              </p>
+
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+
+        <!-- PAGINACIÓN -->
+        @if (totalPaginas() > 1) {
+
+        <div class="flex justify-center mt-8">
+
+          <div class="join">
+
+            <!-- ANTERIOR -->
+            <button class="join-item btn btn-sm" [disabled]="filtros().pagina === 1"
+              (click)="irAPagina(filtros().pagina - 1)">
+              «
+            </button>
+
+            <!-- PÁGINA ACTUAL -->
+            <span class="join-item btn btn-sm btn-disabled px-4">
+              Página {{ filtros().pagina }} de {{ totalPaginas() }}
+            </span>
+
+            <!-- SIGUIENTE -->
+            <button class="join-item btn btn-sm" [disabled]="filtros().pagina === totalPaginas()"
+              (click)="irAPagina(filtros().pagina + 1)">
+              »
+            </button>
+
+          </div>
+
+        </div>
+
+        }
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

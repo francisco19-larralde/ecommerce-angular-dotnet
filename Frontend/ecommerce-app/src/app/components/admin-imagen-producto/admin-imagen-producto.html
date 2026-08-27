@@ -1,0 +1,41 @@
+<div class="card bg-base-100 border border-base-200 shadow-sm">
+  <div class="card-body">
+    <h3 class="font-bold text-base-content mb-3">Imagen del producto</h3>
+
+    <div class="flex items-center gap-4">
+      <div class="w-28 h-28 rounded-xl bg-base-200 overflow-hidden shrink-0 flex items-center justify-center">
+        @if (previewLocal()) {
+        <img [src]="previewLocal()" class="w-full h-full object-cover" />
+        } @else if (imagenUrlActual()) {
+        <img [src]="imagenUrlActual()" class="w-full h-full object-cover" />
+        } @else {
+        <span class="text-xs text-base-content/40">Sin imagen</span>
+        }
+      </div>
+
+      <div class="flex-1">
+        <label class="btn btn-outline btn-sm">
+          @if (subiendo()) {
+          <span class="loading loading-spinner loading-xs"></span>
+          }
+          {{ imagenUrlActual() ? 'Reemplazar imagen' : 'Subir imagen' }}
+          <input type="file" accept=".jpg,.jpeg,.png,.webp" class="hidden" [disabled]="subiendo()"
+            (change)="onArchivoSeleccionado($event)" />
+        </label>
+
+        @if (imagenUrlActual()) {
+        <button type="button" class="btn btn-ghost btn-sm text-error ml-2" [disabled]="subiendo()"
+          (click)="eliminarImagen()">
+          Eliminar
+        </button>
+        }
+
+        <p class="text-xs text-base-content/40 mt-2">JPG, PNG o WEBP. Máximo 5 MB.</p>
+
+        @if (error()) {
+        <p class="text-error text-xs mt-1">{{ error() }}</p>
+        }
+      </div>
+    </div>
+  </div>
+</div>

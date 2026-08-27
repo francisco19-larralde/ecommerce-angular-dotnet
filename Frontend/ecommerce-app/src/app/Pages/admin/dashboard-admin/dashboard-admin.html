@@ -1,0 +1,61 @@
+<div class="bg-base-200/30 min-h-full">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-black text-base-content mb-6">Estadísticas</h1>
+
+    <!-- TARJETAS RESUMEN -->
+    @if (resumen(); as r) {
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body p-4">
+          <span class="text-xs uppercase tracking-wide text-base-content/50">Ingresos totales</span>
+          <p class="text-2xl font-black text-primary">${{ r.ingresosTotales | number:'1.0-0' }}</p>
+        </div>
+      </div>
+      <div class="card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body p-4">
+          <span class="text-xs uppercase tracking-wide text-base-content/50">Órdenes</span>
+          <p class="text-2xl font-black text-base-content">{{ r.cantidadOrdenes }}</p>
+        </div>
+      </div>
+      <div class="card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body p-4">
+          <span class="text-xs uppercase tracking-wide text-base-content/50">Ticket promedio</span>
+          <p class="text-2xl font-black text-base-content">${{ r.ticketPromedio | number:'1.0-0' }}</p>
+        </div>
+      </div>
+      <div class="card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body p-4">
+          <span class="text-xs uppercase tracking-wide text-base-content/50">Unidades vendidas</span>
+          <p class="text-2xl font-black text-base-content">{{ r.productosVendidos }}</p>
+        </div>
+      </div>
+    </div>
+    }
+
+    @if (cargando()) {
+    <div class="flex justify-center py-16"><span class="loading loading-spinner loading-lg"></span></div>
+    } @else {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <div class="lg:col-span-2 card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body">
+          <h2 class="font-bold text-base-content mb-3">Ventas de los últimos 30 días</h2>
+          <app-chart-canvas [config]="configVentasPorDia()" />
+        </div>
+      </div>
+
+      <div class="card bg-base-100 border border-base-200 shadow-sm">
+        <div class="card-body">
+          <h2 class="font-bold text-base-content mb-3">Top 5 productos</h2>
+          @if (productosMasVendidos().length > 0) {
+          <app-chart-canvas [config]="configProductosMasVendidos()" />
+          } @else {
+          <p class="text-sm text-base-content/50 text-center py-8">Todavía no hay ventas registradas.</p>
+          }
+        </div>
+      </div>
+
+    </div>
+    }
+  </div>
+</div>

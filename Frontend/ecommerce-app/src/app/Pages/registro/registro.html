@@ -1,0 +1,319 @@
+<div class="min-h-[calc(100vh-80px)] bg-base-200/40
+         flex items-center justify-center
+         px-4 py-10">
+
+  <div class="w-full max-w-md">
+
+    <!-- LOGO / ENCABEZADO -->
+    <div class="text-center mb-6">
+
+      <div class="w-16 h-16 mx-auto rounded-2xl
+               bg-primary text-primary-content
+               flex items-center justify-center
+               shadow-lg shadow-primary/20
+               mb-4
+               transition-transform duration-200
+               hover:scale-105">
+        <span class="text-2xl font-black">
+          M
+        </span>
+      </div>
+
+      <h1 class="text-3xl font-black tracking-tight text-base-content">
+        Crear tu cuenta
+      </h1>
+
+      <p class="text-base-content/60 mt-2">
+        Registrate y empezá a disfrutar de MiEcommerce
+      </p>
+
+    </div>
+
+
+    <!-- CARD -->
+    <div class="card bg-base-100
+             shadow-2xl
+             border border-base-200
+             overflow-hidden">
+
+      <div class="card-body p-6 md:p-8">
+
+        <!-- TÍTULO -->
+        <div class="flex items-center gap-2 mb-2">
+
+          <div class="w-1.5 h-6
+                   bg-primary
+                   rounded-full"></div>
+
+          <h2 class="text-xl font-bold text-base-content">
+            Crear cuenta
+          </h2>
+
+        </div>
+
+        <p class="text-sm text-base-content/50 mb-4">
+          Completá tus datos para registrarte.
+        </p>
+
+
+        <!-- FORMULARIO -->
+        <form [formGroup]="formulario" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+
+          <!-- NOMBRE Y APELLIDO -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <!-- NOMBRE -->
+            <div>
+
+              <label class="label px-0">
+                <span class="label-text font-semibold">
+                  Nombre
+                </span>
+              </label>
+
+              <label class="input input-bordered
+                       w-full flex items-center gap-2
+                       bg-base-100
+                       focus-within:input-primary
+                       transition-colors duration-200">
+
+                <span class="text-base-content/40">
+                  👤
+                </span>
+
+                <input type="text" formControlName="nombre" placeholder="Juan" class="grow" />
+
+              </label>
+
+              @if (
+              formulario.get('nombre')?.invalid &&
+              formulario.get('nombre')?.touched
+              ) {
+
+              <span class="text-error text-xs
+                       flex items-center gap-1
+                       mt-1.5">
+                <span>⚠</span>
+                El nombre es obligatorio
+              </span>
+
+              }
+
+            </div>
+
+
+            <!-- APELLIDO -->
+            <div>
+
+              <label class="label px-0">
+                <span class="label-text font-semibold">
+                  Apellido
+                </span>
+              </label>
+
+              <label class="input input-bordered
+                       w-full flex items-center gap-2
+                       bg-base-100
+                       focus-within:input-primary
+                       transition-colors duration-200">
+
+                <span class="text-base-content/40">
+                  👤
+                </span>
+
+                <input type="text" formControlName="apellido" placeholder="Pérez" class="grow" />
+
+              </label>
+
+              @if (
+              formulario.get('apellido')?.invalid &&
+              formulario.get('apellido')?.touched
+              ) {
+
+              <span class="text-error text-xs
+                       flex items-center gap-1
+                       mt-1.5">
+                <span>⚠</span>
+                El apellido es obligatorio
+              </span>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- EMAIL -->
+          <div>
+
+            <label class="label px-0">
+              <span class="label-text font-semibold">
+                Email
+              </span>
+            </label>
+
+            <label class="input input-bordered
+                     w-full flex items-center gap-3
+                     bg-base-100
+                     focus-within:input-primary
+                     transition-colors duration-200">
+
+              <span class="text-base-content/40">
+                ✉
+              </span>
+
+              <input type="email" formControlName="email" placeholder="tu@email.com" class="grow" />
+
+            </label>
+
+            @if (
+            formulario.get('email')?.invalid &&
+            formulario.get('email')?.touched
+            ) {
+
+            <span class="text-error text-sm
+                     flex items-center gap-1
+                     mt-1.5">
+              <span>⚠</span>
+              Ingresá un email válido
+            </span>
+
+            }
+
+          </div>
+
+
+          <!-- CONTRASEÑA -->
+          <div>
+
+            <label class="label px-0">
+              <span class="label-text font-semibold">
+                Contraseña
+              </span>
+            </label>
+
+            <label class="input input-bordered
+                     w-full flex items-center gap-3
+                     bg-base-100
+                     focus-within:input-primary
+                     transition-colors duration-200">
+
+              <span class="text-base-content/40">
+                🔒
+              </span>
+
+              <input type="password" formControlName="password" placeholder="Mínimo 6 caracteres" class="grow" />
+
+            </label>
+
+            @if (
+            formulario.get('password')?.invalid &&
+            formulario.get('password')?.touched
+            ) {
+
+            <span class="text-error text-sm
+                     flex items-center gap-1
+                     mt-1.5">
+              <span>⚠</span>
+              Mínimo 6 caracteres
+            </span>
+
+            }
+
+          </div>
+
+
+          <!-- ERROR -->
+          @if (errorMensaje()) {
+
+          <div class="alert alert-error
+                   border border-error/20
+                   shadow-sm">
+
+            <span>
+              ⚠️
+            </span>
+
+            <span class="text-sm">
+              {{ errorMensaje() }}
+            </span>
+
+          </div>
+
+          }
+
+
+          <!-- SUBMIT -->
+          <button type="submit" class="btn btn-primary btn-lg
+                   w-full rounded-xl
+                   shadow-md shadow-primary/10
+                   hover:bg-primary-content
+                   hover:text-primary
+                   hover:border-primary
+                   hover:shadow-lg
+                   hover:-translate-y-0.5
+                   transition-all duration-200
+                   mt-2" [disabled]="cargando()">
+
+            @if (cargando()) {
+
+            <span class="loading loading-spinner loading-sm"></span>
+
+            Creando cuenta...
+
+            } @else {
+
+            <span>
+              ✨
+            </span>
+
+            Crear cuenta
+
+            <span>
+              →
+            </span>
+
+            }
+
+          </button>
+
+
+          <!-- LOGIN -->
+          <div class="divider
+                   text-xs
+                   text-base-content/40">
+            ¿YA TENÉS CUENTA?
+          </div>
+
+
+          <p class="text-sm text-center
+                   text-base-content/60">
+            ¿Ya tenés cuenta?
+
+            <a routerLink="/login" class="link link-primary
+                     font-bold
+                     no-underline
+                     hover:underline">
+              Iniciar sesión
+            </a>
+
+          </p>
+
+        </form>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <p class="text-center text-xs
+             text-base-content/40
+             mt-6">
+      🛍️ Creá tu cuenta y empezá a comprar
+    </p>
+
+  </div>
+
+</div>

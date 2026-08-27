@@ -1,0 +1,234 @@
+<div class="min-h-[calc(100vh-80px)] bg-base-200/40
+         flex items-center justify-center
+         px-4 py-10">
+
+  <div class="w-full max-w-md">
+
+    <!-- LOGO / ENCABEZADO -->
+    <div class="text-center mb-6">
+
+      <div class="w-16 h-16 mx-auto rounded-2xl
+               bg-primary text-primary-content
+               flex items-center justify-center
+               shadow-lg shadow-primary/20
+               mb-4
+               transition-transform duration-200
+               hover:scale-105">
+        <span class="text-2xl font-black">
+          M
+        </span>
+      </div>
+
+      <h1 class="text-3xl font-black tracking-tight text-base-content">
+        Bienvenido
+      </h1>
+
+      <p class="text-base-content/60 mt-2">
+        Ingresá a tu cuenta para continuar
+      </p>
+
+    </div>
+
+
+    <!-- CARD -->
+    <div class="card bg-base-100
+             shadow-2xl
+             border border-base-200
+             overflow-hidden">
+
+      <div class="card-body p-6 md:p-8">
+
+        <!-- TÍTULO -->
+        <div class="flex items-center gap-2 mb-2">
+
+          <div class="w-1.5 h-6
+                   bg-primary
+                   rounded-full"></div>
+
+          <h2 class="text-xl font-bold text-base-content">
+            Iniciar sesión
+          </h2>
+
+        </div>
+
+        <p class="text-sm text-base-content/50 mb-4">
+          Ingresá tus datos para acceder a MiEcommerce.
+        </p>
+
+
+        <!-- FORMULARIO -->
+        <form [formGroup]="formulario" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
+
+          <!-- EMAIL -->
+          <div>
+
+            <label class="label px-0">
+              <span class="label-text font-semibold">
+                Email
+              </span>
+            </label>
+
+            <label class="input input-bordered
+                     w-full flex items-center gap-3
+                     bg-base-100
+                     focus-within:input-primary
+                     transition-colors duration-200">
+
+              <span class="text-base-content/40">
+                ✉
+              </span>
+
+              <input type="email" formControlName="email" placeholder="tu@email.com" class="grow" />
+
+            </label>
+
+            @if (
+            formulario.get('email')?.invalid &&
+            formulario.get('email')?.touched
+            ) {
+
+            <span class="text-error text-sm
+                     flex items-center gap-1
+                     mt-1.5">
+              <span>⚠</span>
+              Ingresá un email válido
+            </span>
+
+            }
+
+          </div>
+
+
+          <!-- CONTRASEÑA -->
+          <div>
+
+            <label class="label px-0">
+              <span class="label-text font-semibold">
+                Contraseña
+              </span>
+            </label>
+
+            <label class="input input-bordered
+                     w-full flex items-center gap-3
+                     bg-base-100
+                     focus-within:input-primary
+                     transition-colors duration-200">
+
+              <span class="text-base-content/40">
+                🔒
+              </span>
+
+              <input type="password" formControlName="password" placeholder="Tu contraseña" class="grow" />
+
+            </label>
+
+            @if (
+            formulario.get('password')?.invalid &&
+            formulario.get('password')?.touched
+            ) {
+
+            <span class="text-error text-sm
+                     flex items-center gap-1
+                     mt-1.5">
+              <span>⚠</span>
+              La contraseña es obligatoria
+            </span>
+
+            }
+
+          </div>
+
+
+          <!-- ERROR DEL SERVIDOR -->
+          @if (errorMensaje()) {
+
+          <div class="alert alert-error
+                   border border-error/20
+                   shadow-sm">
+
+            <span>
+              ⚠️
+            </span>
+
+            <span class="text-sm">
+              {{ errorMensaje() }}
+            </span>
+
+          </div>
+
+          }
+
+
+          <!-- SUBMIT -->
+          <button type="submit" class="btn btn-primary btn-lg
+                   w-full rounded-xl
+                   shadow-md shadow-primary/10
+                   hover:bg-primary-content
+                   hover:text-primary
+                   hover:border-primary
+                   hover:shadow-lg
+                   hover:-translate-y-0.5
+                   transition-all duration-200" [disabled]="cargando()">
+
+            @if (cargando()) {
+
+            <span class="loading loading-spinner loading-sm"></span>
+
+            Ingresando...
+
+            } @else {
+
+            <span>
+              Ingresar
+            </span>
+
+            <span class="text-lg
+                     transition-transform duration-200
+                     group-hover:translate-x-1">
+              →
+            </span>
+
+            }
+
+          </button>
+
+
+          <!-- SEPARADOR -->
+          <div class="divider
+                   text-xs
+                   text-base-content/40
+                   my-1">
+            ¿PRIMERA VEZ?
+          </div>
+
+
+          <!-- REGISTRO -->
+          <p class="text-sm text-center
+                   text-base-content/60">
+            ¿No tenés cuenta?
+
+            <a routerLink="/registro" class="link link-primary
+                     font-bold no-underline
+                     hover:underline
+                     hover:text-primary">
+              Registrate
+            </a>
+          </p>
+
+        </form>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER VISUAL -->
+    <p class="text-center text-xs
+             text-base-content/40
+             mt-6">
+      🛍️ Comprá fácil, rápido y seguro
+    </p>
+
+  </div>
+
+</div>

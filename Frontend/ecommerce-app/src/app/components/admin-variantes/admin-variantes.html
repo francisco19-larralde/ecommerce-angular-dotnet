@@ -1,0 +1,62 @@
+<div class="card bg-base-100 border border-base-200 shadow-sm">
+  <div class="card-body">
+    <div class="flex items-center justify-between mb-1">
+      <h3 class="font-bold text-base-content">Talles y stock</h3>
+      @if (variantes().length > 0) {
+      <span class="badge badge-primary badge-outline">Stock total: {{ stockTotal() }}</span>
+      }
+    </div>
+    <p class="text-sm text-base-content/60 mb-4">
+      Si cargás al menos un talle, el cliente va a tener que elegirlo para poder comprar este producto.
+      El stock general se calcula solo, sumando estos talles.
+    </p>
+
+    @if (cargando()) {
+    <div class="flex justify-center py-6">
+      <span class="loading loading-spinner"></span>
+    </div>
+    } @else {
+
+    @if (variantes().length > 0) {
+    <div class="flex flex-col gap-2 mb-4">
+      @for (variante of variantes(); track variante.id) {
+      <div class="flex items-center gap-3 bg-base-200/40 rounded-lg p-2">
+        <span class="badge badge-outline font-semibold min-w-14 justify-center">{{ variante.talle }}</span>
+
+        <input type="number" class="input input-bordered input-sm w-24" [value]="variante.stock"
+          [disabled]="guardandoId() === variante.id" (change)="actualizarStock(variante, +$any($event.target).value)" />
+        <span class="text-xs text-base-content/50">unidades</span>
+
+        <button type="button" class="btn btn-ghost btn-xs text-error ml-auto" [disabled]="guardandoId() === variante.id"
+          (click)="eliminarTalle(variante)">
+          Eliminar
+        </button>
+      </div>
+      }
+    </div>
+    }
+
+    <div class="flex items-end gap-2 pt-3 border-t border-base-200">
+      <div class="flex-1">
+        <label class="label"><span class="label-text text-xs">Talle</span></label>
+        <input type="text" placeholder="Ej: S, M, 40..." class="input input-bordered input-sm w-full"
+          [(ngModel)]="nuevoTalle" />
+      </div>
+      <div class="w-28">
+        <label class="label"><span class="label-text text-xs">Stock</span></label>
+        <input type="number" class="input input-bordered input-sm w-full" [(ngModel)]="nuevoStock" />
+      </div>
+      <button type="button" class="btn btn-primary btn-sm" [disabled]="creando()" (click)="agregarTalle()">
+        @if (creando()) {
+        <span class="loading loading-spinner loading-xs"></span>
+        }
+        Agregar
+      </button>
+    </div>
+
+    @if (error()) {
+    <p class="text-error text-xs mt-2">{{ error() }}</p>
+    }
+    }
+  </div>
+</div>
